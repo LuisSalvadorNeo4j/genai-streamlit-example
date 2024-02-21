@@ -257,25 +257,25 @@ def graph_article(session, text):
     
 
 question = st.text_input(
-    "Renseigner les termes de recherche",
-    placeholder="accident+voiture",
+    "Enter search terms",
+    placeholder="accident+car",
 )
 
 #term = "accident+moto+grievement"
 if question:
-    st.write('Recherche avec les termes : ', question)
+    st.write('Searching with the terms: ', question)
     
-    results = search(question, lang="fr", num_results=5, advanced=True)
+    results = search(question, lang="en", num_results=5, advanced=True)
         
     # Neo4j connection details
-    url = st.secrets["AAA_URI"]
-    username = st.secrets["AAA_USERNAME"]
-    password = st.secrets["AAA_PASSWORD"]
+    url = st.secrets["DB_URI"]
+    username = st.secrets["DB_USER"]
+    password = st.secrets["DB_PASSWORD"]
     
     # Create a driver instance
     driver = GraphDatabase.driver(url, auth=(username, password))        
 
-    with st.spinner('Collecte des articles...'):
+    with st.spinner('Collecting articles...'):
         # Insert data from the DataFrame
         
         with driver.session() as session:
@@ -290,7 +290,7 @@ if question:
             #session.run(constraint_factor_id)
             #session.run(constraint_solution_id)    
 
-            st.info('Enrichissement des articles', icon="ℹ️")    
+            st.info('Enriching articles', icon="ℹ️")    
             for result in results:
                 page = requests.get(result.url)
                 soup = BeautifulSoup(page.content, "html.parser")
@@ -303,8 +303,8 @@ if question:
                         #st.info('texte : ' + text, icon="ℹ️")
                         # update_article(session, result.url, text)
                         graph_article(session, text)   
-            st.info('Fin enrichissement des articles', icon="ℹ️")    
-    st.success('Collecte des articles terminée !')        
+            st.info('End of article enrichment', icon="ℹ️")    
+    st.success('Collection of items completed!')         
     
     # Close the driver
     driver.close()

@@ -27,9 +27,9 @@ if question:
     results = search(question, lang="fr", num_results=50, advanced=True)
         
     # Neo4j connection details
-    url = st.secrets["AAA_URI"]
-    username = st.secrets["AAA_USERNAME"]
-    password = st.secrets["AAA_PASSWORD"]
+    url = st.secrets["DB_URI"]
+    username = st.secrets["DB_USER"]
+    password = st.secrets["DB_PASSWORD"]
     
     # Create a driver instance
     driver = GraphDatabase.driver(url, auth=(username, password))
