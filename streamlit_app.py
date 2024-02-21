@@ -39,9 +39,9 @@ from langchain.vectorstores.neo4j_vector import Neo4jVector
 from langchain.embeddings.openai import OpenAIEmbeddings
 
 os.environ['OPENAI_API_KEY'] = st.secrets["OPENAI_KEY"]
-url = st.secrets["AAA_URI"]
-username = st.secrets["AAA_USERNAME"]
-password = st.secrets["AAA_PASSWORD"]
+url = st.secrets["DB_URI"]
+username = st.secrets["DB_USER"]
+password = st.secrets["DB_PASSWORD"]
 graph = Neo4jGraph(
     url=url,
     username=username,
