@@ -16,14 +16,14 @@ import glob
 from timeit import default_timer as timer
 
 st.set_page_config(
-        page_title="Nouvel Observatoire",
+        page_title="New Observatory",
 )
 
 from st_pages import show_pages_from_config
 
 show_pages_from_config()
 
-st.title("🆕 Nouvel observatoire sur les accidents")
+st.title("🆕 New accident observatory")
 
 constraints_cyp="""
 CREATE CONSTRAINT node_key_personne_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;

@@ -6,23 +6,23 @@ from neo4j import GraphDatabase
 from googlesearch import search
 
 st.set_page_config(
-        page_title="Créer Observatoire",
+        page_title="Create Observatory",
 )
 
 from st_pages import show_pages_from_config
 
 show_pages_from_config()
 
-st.title("📝 Créer un nouvel observatoire")
+st.title("📝 Create a new observatory")
 
 question = st.text_input(
-    "Renseigner les termes de recherche",
-    placeholder="accident+voiture",
+    "Enter search terms",
+    placeholder="accident+car",
 )
 
 #term = "accident+moto+grievement"
 if question:
-    st.write('Recherche avec les termes : ', question)
+    st.write('Search with terms: ', question)
     
     results = search(question, lang="fr", num_results=50, advanced=True)
         
@@ -44,14 +44,14 @@ if question:
     def update_article(session, url, text):
         session.run("MATCH (a:Article {url: $url}) ON MATCH SET a.text = $text", url=url, text=text)
 
-    with st.spinner('Collecte des articles...'):
+    with st.spinner('Collecting articles...'):
         # Insert data from the DataFrame
         
         with driver.session() as session:
             #for result in results:
              #   add_article(session, result.url, result.description)
 
-            st.info('Enrichissement des articles', icon="ℹ️")    
+            st.info('Enriching articles', icon="ℹ️")    
             for result in results:
                 page = requests.get(result.url)
                 soup = BeautifulSoup(page.content, "html.parser")
@@ -63,8 +63,8 @@ if question:
                     if text:
                         # update_article(session, result.url, text)
                         ajout_article(session, result.url, result.description, text)   
-            st.info('Fin enrichissement des articles', icon="ℹ️")    
-    st.success('Collecte des articles terminée !')        
+            st.info('End of article enrichment', icon="ℹ️")    
+    st.success('Collection of items completed!')        
     
     # Close the driver
     driver.close()
