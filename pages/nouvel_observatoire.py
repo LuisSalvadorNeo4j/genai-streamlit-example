@@ -238,11 +238,11 @@ def generate_cypher(in_json):
 
 def graph_article(session, text):
   prompts = [prompt1]
-  resultats = []
+  results = []
   for p in prompts:
-    resultats = run_completion(p, resultats, clean_text(text))
-    if resultats:
-      ent_cyp, rel_cyp = generate_cypher(resultats)
+    results = run_completion(p, results, clean_text(text))
+    if results:
+      ent_cyp, rel_cyp = generate_cypher(results)
       # ingérer les entités
       st.info('Ingestion of entities', icon="ℹ️") 
       st.info(ent_cyp, icon="ℹ️")

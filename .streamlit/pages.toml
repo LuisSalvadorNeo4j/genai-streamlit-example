@@ -1,14 +1,14 @@
 [[pages]]
 path = "streamlit_app.py"
-name = "Interroger Observatoire"
+name = "Interrogate Observatory"
 icon = ":house:"
 
 [[pages]]
 path = "pages/creer_observatoire.py"
-name = "Creer Observatoire"
+name = "Create Observatory"
 icon = ":books:"
 
 [[pages]]
 path = "pages/nouvel_observatoire.py"
-name = "Nouvel Observatoire"
+name = "New Observatory"
 icon = ":bar_chart:"
