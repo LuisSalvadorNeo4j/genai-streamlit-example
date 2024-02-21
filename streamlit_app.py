@@ -11,7 +11,7 @@ import st_pages
 import streamlit_extras
 
 st.set_page_config(
-        page_title="Observatoire des Accidents",
+        page_title="Accidents finder",
 )
 
 #from streamlit_extras.app_logo import add_logo
@@ -24,7 +24,7 @@ from st_pages import show_pages_from_config
 show_pages_from_config()
 
 """
-# Observatoire des accidents
+# Accidents finder
 """
 
 #st.image('images/chatgpt_accident.png', caption='Accidents', width=500)
@@ -58,7 +58,7 @@ vectorstore = Neo4jVector.from_existing_graph(
     password=password,
     index_name='articledescription',
     node_label="Article",
-    text_node_properties=['titre', 'description', 'texte'],
+    text_node_properties=['title', 'description', 'texte'],
     embedding_node_property='embedding',
 )
 
@@ -68,17 +68,17 @@ vector_qa = RetrievalQA.from_chain_type(
 contextualize_query = """
 match (node)-[:DOCUMENTE]->(e:Evenement)
 WITH node AS a, e, score, {} as metadata limit 1
-OPTIONAL MATCH (e)<-[:EXPLIQUE]-(f:Facteur)-[:EXPLIQUE]->(e2:Evenement)
+OPTIONAL MATCH (e)<-[:EXPLIQUE]-(f:Factor)-[:EXPLIQUE]->(e2:Evenement)
 WITH a, e, score, metadata, apoc.text.join(collect(e2.description), ",") AS autres_evenements
-RETURN "Evenement : "+ e.description + " autres événements dus aux mêmes facteurs : " + coalesce(autres_evenements, "") +"\n" as text, score, metadata
+RETURN "Evenement : "+ e.description + " autres événements dus aux mêmes factor : " + coalesce(autres_evenements, "") +"\n" as text, score, metadata
 """
 
 contextualize_query1 = """
 match (node)-[:DOCUMENTE]->(e:Evenement)
 WITH node AS a, e, score, {} as metadata limit 1
-OPTIONAL MATCH (e)<-[:EXPLIQUE]-(:Facteur)
+OPTIONAL MATCH (e)<-[:EXPLIQUE]-(:Factor)
 WITH a, e, i, f, score, metadata
-RETURN "Titre Article: "+ a.titre + " description: "+ a.description + " facteur: "+ coalesce(f.name, "")+ "\n" as text, score, metadata
+RETURN "Title Article: "+ a.title + " description: "+ a.description + " factor: "+ coalesce(f.name, "")+ "\n" as text, score, metadata
 """
 
 contextualized_vectorstore = Neo4jVector.from_existing_index(
@@ -100,11 +100,11 @@ question = container.text_input("**:blue[Question:]**", "")
 if question:
     tab1, tab2, tab3 = st.tabs(["No-RAG", "Basic RAG", "Augmented RAG"])
     with tab1:
-        st.markdown("**:blue[No-RAG.] LLM seulement. Réponse générée par l'IA générative seule:**")
+        st.markdown("**:blue[No-RAG.] LLM only. Response generated from genIA only:**")
         st.write(llm(question))
     with tab2:
-        st.markdown("**:blue[Basic RAG.] Réponse par recherche vectorielle:**")
+        st.markdown("**:blue[Basic RAG.] Response by vector search:**")
         st.write(vector_qa.run(question))
     with tab3:
-        st.markdown("**:blue[Augmented RAG.] Réponse par recherche vectorielle ET par augmentation de contexte:**")
+        st.markdown("**:blue[Augmented RAG.] Response by vector search and context augmentation:**")
         st.write(vector_plus_context_qa.run(question))

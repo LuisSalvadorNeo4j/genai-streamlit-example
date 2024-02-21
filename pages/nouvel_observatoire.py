@@ -33,7 +33,7 @@ CREATE CONSTRAINT node_key_evenement_id IF NOT EXISTS FOR (n:Evenement) REQUIRE 
 CREATE CONSTRAINT node_key_typeevenement_id IF NOT EXISTS FOR (n:TypeEvenement) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_document_id IF NOT EXISTS FOR (n:Document) REQUIRE n.id IS NODE KEY;
-CREATE CONSTRAINT node_key_facteur_id IF NOT EXISTS FOR (n:Facteur) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_factor_id IF NOT EXISTS FOR (n:Factor) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.id IS NODE KEY;
 """
 
@@ -58,8 +58,8 @@ CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id
 constraint_document_id = """
 CREATE CONSTRAINT node_key_document_id IF NOT EXISTS FOR (n:Document) REQUIRE n.id IS NODE KEY;
 """
-constraint_facteur_id = """
-CREATE CONSTRAINT node_key_facteur_id IF NOT EXISTS FOR (n:Facteur) REQUIRE n.id IS NODE KEY;
+constraint_factor_id = """
+CREATE CONSTRAINT node_key_factor_id IF NOT EXISTS FOR (n:Factor) REQUIRE n.id IS NODE KEY;
 """
 constraint_solution_id = """
 CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.id IS NODE KEY;
@@ -74,8 +74,8 @@ prompt1="""Depuis la description de l'accident ci-dessous, extraire les entités
     label:'TypeEvenement',id:string,name:string //TypeEvenement la propriété `id` c'est le type d'événement qui s'est produit
     label:'Article',id:string,urlMedia:string,uri:string,url:string,journaliste:string,synthese:string,date:datetime,titre:string,media:string,description:string,texte:string //Entité Article ; la propriété `id` c'est le nom de l'article, en lowercase & camel-case & qui commence toujours par un caractère alphabétique. La propriété `texte`doit contenir le texte intégral de l'article. Le champ `url` doit être renseigné par le lien Internet de l'article
     label:'Document',id:string,description:string //Entité Document ; la propriété `id` c'est le nom de du document, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Facteur',id:string,name:string // Entité Facteur c'est le facteur explicatif de l'événement; la propriété `id` c'est le nom du facteur, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Solution',id:string,name:string,description:string,when:string // Entité Solution c'est la solution qui pourrait aider à résoudre l'événement qui s'est produit ; la propriété `id` c'est le nom du facteur, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
+    label:'Factor',id:string,name:string // Entité Factor c'est le factor explicatif de l'événement; la propriété `id` c'est le nom du factor, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
+    label:'Solution',id:string,name:string,description:string,when:string // Entité Solution c'est la solution qui pourrait aider à résoudre l'événement qui s'est produit ; la propriété `id` c'est le nom du factor, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
     label:'Impact',id:string,name:string,description:string // Entité Impact c'est l'impact de l'événement qui s'est produit ; la propriété `id` c'est le nom de l'impact, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
     label:'Personne',id:string,prenom:string,nom:string,age:string,sexe:string,nationalite:string,profession:string,passeJudiciare:string // Entité Personne c'est une personne liée à l'événement qui s'est produit ; la propriété `id` c'est le nom de la personne, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
     label:'Groupe',id:string,nom:string,nature:string,nombreMembres:integer // Entité Groupe c'est un groupe auquel une personne est liée ; la propriété `id` c'est le nom du groupe, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
@@ -101,7 +101,7 @@ prompt1="""Depuis la description de l'accident ci-dessous, extraire les entités
     Evenement|A|TypeEvenement
     Article|DOCUMENTE|Evenement
     Document|PROUVE|Evenement
-    Facteur|EXPLIQUE|Evenement
+    Factor|EXPLIQUE|Evenement
     Evenement|A|Solution
 
 Le resultat devrait ressembler à :
@@ -116,7 +116,7 @@ $ctext
 
 openai.api_key = st.secrets["OPENAI_KEY"]
 
-nbResSearch = st.secrets["NB_RES_SEARCH"]
+#nbResSearch = st.secrets["NB_RES_SEARCH"]
 
 # GPT-4 or GPT-3.5 Prompt to complete
 @retry(tries=2, delay=5)
@@ -201,7 +201,7 @@ def generate_cypher(in_json):
             id = 'a'+str(time.time_ns())
           elif label == 'Document':
             id = 'd'+str(time.time_ns())
-          elif label == 'Facteur':
+          elif label == 'Factor':
             id = 'f'+str(time.time_ns())
           elif label == 'Solution':
             id = 's'+str(time.time_ns())
@@ -287,7 +287,7 @@ if question:
             #session.run(constraint_typeevenement_id)
             #session.run(constraint_article_id)
             #session.run(constraint_document_id)
-            #session.run(constraint_facteur_id)
+            #session.run(constraint_factor_id)
             #session.run(constraint_solution_id)    
 
             st.info('Enrichissement des articles', icon="ℹ️")    
