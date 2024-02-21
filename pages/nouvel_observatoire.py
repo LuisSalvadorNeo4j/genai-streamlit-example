@@ -29,8 +29,8 @@ constraints_cyp="""
 CREATE CONSTRAINT node_key_personne_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_groupe_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_impact_id IF NOT EXISTS FOR (n:Impact) REQUIRE n.id IS NODE KEY;
-CREATE CONSTRAINT node_key_evenement_id IF NOT EXISTS FOR (n:Evenement) REQUIRE n.id IS NODE KEY;
-CREATE CONSTRAINT node_key_typeevenement_id IF NOT EXISTS FOR (n:TypeEvenement) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_event_id IF NOT EXISTS FOR (n:Event) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_typeevent_id IF NOT EXISTS FOR (n:TypeEvent) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_document_id IF NOT EXISTS FOR (n:Document) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_factor_id IF NOT EXISTS FOR (n:Factor) REQUIRE n.id IS NODE KEY;
@@ -46,11 +46,11 @@ CREATE CONSTRAINT node_key_groupe_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id I
 constraint_impact_id = """
 CREATE CONSTRAINT node_key_impact_id IF NOT EXISTS FOR (n:Impact) REQUIRE n.id IS NODE KEY;
 """
-constraint_evenement_id = """
-CREATE CONSTRAINT node_key_evenement_id IF NOT EXISTS FOR (n:Evenement) REQUIRE n.id IS NODE KEY;
+constraint_event_id = """
+CREATE CONSTRAINT node_key_event_id IF NOT EXISTS FOR (n:Event) REQUIRE n.id IS NODE KEY;
 """
-constraint_typeevenement_id = """
-CREATE CONSTRAINT node_key_typeevenement_id IF NOT EXISTS FOR (n:TypeEvenement) REQUIRE n.id IS NODE KEY;
+constraint_typeevent_id = """
+CREATE CONSTRAINT node_key_typeevent_id IF NOT EXISTS FOR (n:TypeEvent) REQUIRE n.id IS NODE KEY;
 """
 constraint_article_id = """
 CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id IS NODE KEY;
@@ -66,50 +66,49 @@ CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.
 """
 
 
-prompt1="""Depuis la description de l'accident ci-dessous, extraire les entités et les relations décrites dans le format mentionné :
-0. TOUJOURS TERMINER LA RÉPONSE. Ne jamais envoyer de réponses partielles.
-1. Tout d'abord, recherchez ces types d'entités dans le texte et générez-les dans un format séparé par des virgules, similaire à celui des types d'entités. La propriété `id` de chaque entité doit être alphanumérique et unique parmi les entités. Vous ferez référence à cette propriété pour définir la relation entre les entités. Ne créez pas de nouveaux types d'entités qui ne sont pas mentionnés ci-dessous. Le document doit être résumé et stocké dans l'entité Article sous la propriété `description`. Vous devrez générer autant d'entités que nécessaire selon les types ci-dessous :
-    Types d'entités :
-    label:'Evenement',id:string,description:string,date:datetime,duree:string,lieu:string //Evenement c'est un événement qui s'est produit, par exemple un accident
-    label:'TypeEvenement',id:string,name:string //TypeEvenement la propriété `id` c'est le type d'événement qui s'est produit
-    label:'Article',id:string,urlMedia:string,uri:string,url:string,journaliste:string,synthese:string,date:datetime,titre:string,media:string,description:string,texte:string //Entité Article ; la propriété `id` c'est le nom de l'article, en lowercase & camel-case & qui commence toujours par un caractère alphabétique. La propriété `texte`doit contenir le texte intégral de l'article. Le champ `url` doit être renseigné par le lien Internet de l'article
-    label:'Document',id:string,description:string //Entité Document ; la propriété `id` c'est le nom de du document, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Factor',id:string,name:string // Entité Factor c'est le factor explicatif de l'événement; la propriété `id` c'est le nom du factor, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Solution',id:string,name:string,description:string,when:string // Entité Solution c'est la solution qui pourrait aider à résoudre l'événement qui s'est produit ; la propriété `id` c'est le nom du factor, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Impact',id:string,name:string,description:string // Entité Impact c'est l'impact de l'événement qui s'est produit ; la propriété `id` c'est le nom de l'impact, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Personne',id:string,prenom:string,nom:string,age:string,sexe:string,nationalite:string,profession:string,passeJudiciare:string // Entité Personne c'est une personne liée à l'événement qui s'est produit ; la propriété `id` c'est le nom de la personne, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Groupe',id:string,nom:string,nature:string,nombreMembres:integer // Entité Groupe c'est un groupe auquel une personne est liée ; la propriété `id` c'est le nom du groupe, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-2. Ensuite, générez chaque relation comme un triplet de source, relation et cible. Pour faire référence à l'entité source et à l'entité cible, utilisez leur propriété `id` respective. Vous devrez générer autant de relations que nécessaire, comme défini ci-dessous :
-    Types de relations :
-    Personne|A_BLESSE|Personne
-    Personne|A_TUE|Personne
-    Personne|CONNAIT|Personne
-    Personne|EN_LIEN_AVEC|Personne
-    Personne|FAIT_PARTIE_DE|Groupe
-    Personne|VEUT_FAIRE_PARTIE_DE|Groupe
-    Personne|INFLUENCE|Groupe
-    Personne|DIRIGE|Groupe
-    Personne|VICTIME_DE|Evenement
-    Personne|AUTEUR_DE|Evenement
-    Personne|INTERVIENT_DANS|Evenement
-    Personne|DOCUMENTE|Evenement
-    Personne|TEMOIN_DE|Evenement
-    Personne|COVICTIME_DE|Evenement
-    Evenement|A|Impact
-    Impact|SUR|Personne
-    Evenement|SUIT|Evenement
-    Evenement|A|TypeEvenement
-    Article|DOCUMENTE|Evenement
-    Document|PROUVE|Evenement
-    Factor|EXPLIQUE|Evenement
-    Evenement|A|Solution
+prompt1="""Since the description of the accident below, extract the entities and relationships described in the mentioned format:
+0. ALWAYS COMPLETE THE RESPONSE. Never send partial responses.
+1. First, look for these types of entities in the text and generate them in a format separated by commas, similar to the types of entities. The `id` property of each entity must be alphanumeric and unique among the entities. You will refer to this property to define the relationship between the entities. Do not create new types of entities that are not mentioned below. The document must be summarized and stored in the Article entity under the `description` property. You will need to generate as many entities as necessary according to the types below:
+    Entity Types:
+    label: 'Event', id: string, description: string, date: datetime, duration: string, location: string //Event is an event that occurred, for example, an accident
+    label: 'EventType', id: string, name: string //EventType the `id` property is the type of event that occurred
+    label: 'Article', id: string, urlMedia: string, uri: string, url: string, journalist: string, summary: string, date: datetime, title: string, media: string, description: string, text: string //Article Entity; the `id` property is the name of the article, in lowercase & camel-case & always starts with an alphabetical character. The `text` property must contain the full text of the article. The `url` field must be filled in by the internet link of the article
+    label: 'Document', id: string, description: string //Document Entity; the `id` property is the name of the document, in lowercase & camel-case & always starts with an alphabetical character
+    label: 'Factor', id: string, name: string // Factor Entity is the explanatory factor of the event; the `id` property is the name of the factor, in lowercase & camel-case & always starts with an alphabetical character
+    label: 'Solution', id: string, name: string, description: string, when: string // Solution Entity is the solution that could help resolve the event that occurred; the `id` property is the name of the factor, in lowercase & camel-case & always starts with an alphabetical character
+    label: 'Impact', id: string, name: string, description: string // Impact Entity is the impact of the event that occurred; the `id` property is the name of the impact, in lowercase & camel-case & always starts with an alphabetical character
+    label: 'Person', id: string, first_name: string, last_name: string, age: string, gender: string, nationality: string, profession: string, judicial_past: string // Person Entity is a person related to the event that occurred; the `id` property is the name of the person, in lowercase & camel-case & always starts with an alphabetical character
+    label: 'Group', id: string, name: string, nature: string, numberMembers: integer // Group Entity is a group to which a person is linked; the `id` property is the name of the group, in lowercase & camel-case & always starts with an alphabetical character
+2. Then, generate each relationship as a triplet of source, relation, and target. To refer to the source entity and the target entity, use their respective `id` property. You will need to generate as many relationships as necessary, as defined below:
+    Relationship Types:
+    Person|INJURES|Person
+    Person|KILLS|Person
+    Person|KNOWS|Person
+    Person|RELATED_TO|Person
+    Person|PART_OF|Group
+    Person|WANTS_TO_BE_PART_OF|Group
+    Person|INFLUENCES|Group
+    Person|LEADS|Group
+    Person|VICTIM_OF|Event
+    Person|AUTHOR_OF|Event
+    Person|INVOLVED_IN|Event
+    Person|DOCUMENTS|Event
+    Person|WITNESS_OF|Event
+    Person|COVICTIM_OF|Event
+    Event|HAS|Impact
+    Impact|ON|Person
+    Event|FOLLOWS|Event
+    Event|HAS|EventType
+    Article|DOCUMENTS|Event
+    Document|PROVES|Event
+    Factor|EXPLAINS|Event
+    Event|HAS|Solution
 
-Le resultat devrait ressembler à :
+The result should look like:
 {
-    "entites": [{"label":"Evenement","id":string,"description":string,"date":datetime,"duree":string,"lieu":string}],
+    "entities": [{"label":"Event","id":string,"description":string,"date":datetime,"duration":string,"location":string}],
     "relations": [{"source":string',"relation":string,"target":string}]
 }
-
 Accident :
 $ctext
 """
@@ -155,7 +154,7 @@ def clean_text(text):
 
 def run_completion(prompt, results, ctext):
     try:
-      system = "Vous êtes un expert Accident aidant qui extrait des informations pertinentes et les stocke dans un graphe de connaissances Neo4j"
+      system = "You are an Accident Expert Helper who extracts relevant information and stores it in a Neo4j knowledge graph."
       pr = Template(prompt).substitute(ctext=ctext)
       res = process_gpt(system, pr)
       results.append(json.loads(res.replace("\'", "'")))
@@ -185,7 +184,7 @@ def generate_cypher(in_json):
       MERGE ($src_id)-[:$rel]->($tgt_id)
     """)
     for obj in in_json:
-      for j in obj['entites']:
+      for j in obj['entities']:
           props = ''
           label = j['label']
           id = j['id']
@@ -193,9 +192,9 @@ def generate_cypher(in_json):
             id = 'g'+str(time.time_ns())
           elif label == 'Personne':
             id = 'p'+str(time.time_ns())
-          elif label == 'Evenement':
+          elif label == 'Event':
             id = 'e'+str(time.time_ns())
-          elif label == 'TypeEvenement':
+          elif label == 'TypeEvent':
             id = 'te'+str(time.time_ns())
           elif label == 'Article':
             id = 'a'+str(time.time_ns())
@@ -245,12 +244,12 @@ def graph_article(session, text):
     if resultats:
       ent_cyp, rel_cyp = generate_cypher(resultats)
       # ingérer les entités
-      st.info('Ingestion des entités', icon="ℹ️") 
+      st.info('Ingestion of entities', icon="ℹ️") 
       st.info(ent_cyp, icon="ℹ️")
       for req_ent in ent_cyp:
         session.run(req_ent)
       # ingérer les relations
-      st.info('Ingestion des relations', icon="ℹ️") 
+      st.info('Ingestion of relations', icon="ℹ️") 
       st.info(rel_cyp, icon="ℹ️")
       for req_rel in rel_cyp:
         session.run(req_rel)
@@ -279,12 +278,12 @@ if question:
         # Insert data from the DataFrame
         
         with driver.session() as session:
-            #st.info('Mise à jour des contraintes', icon="ℹ️")    
+            #st.info('Updating constraints', icon="ℹ️")    
             #session.run(constraint_personne_id)
             #session.run(constraint_groupe_id)
             #session.run(constraint_impact_id)
-            #session.run(constraint_evenement_id)
-            #session.run(constraint_typeevenement_id)
+            #session.run(constraint_event_id)
+            #session.run(constraint_typeevent_id)
             #session.run(constraint_article_id)
             #session.run(constraint_document_id)
             #session.run(constraint_factor_id)
@@ -300,7 +299,7 @@ if question:
                     for paragraph in paragraphs:
                         text = text + paragraph.text.strip()
                     if text:
-                        #st.info('texte : ' + text, icon="ℹ️")
+                        #st.info('text : ' + text, icon="ℹ️")
                         # update_article(session, result.url, text)
                         graph_article(session, text)   
             st.info('End of article enrichment', icon="ℹ️")    
