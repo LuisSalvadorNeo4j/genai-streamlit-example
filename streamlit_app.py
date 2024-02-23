@@ -52,7 +52,7 @@ graph = Neo4jGraph(
 llm = OpenAI(model_name="gpt-4")
 
 vectorstore = Neo4jVector.from_existing_graph(
-    OpenAIEmbeddings(),
+    OpenAIEmbeddings(model="text-embedding-3-large"),
     url=url,
     username=username,
     password=password,
