@@ -49,7 +49,7 @@ graph = Neo4jGraph(
 )
 
 
-llm = OpenAI()
+llm = OpenAI(model_name="gpt-4")
 
 vectorstore = Neo4jVector.from_existing_graph(
     OpenAIEmbeddings(),
@@ -63,7 +63,7 @@ vectorstore = Neo4jVector.from_existing_graph(
 )
 
 vector_qa = RetrievalQA.from_chain_type(
-    llm=ChatOpenAI(), chain_type="stuff", retriever=vectorstore.as_retriever())
+    llm=ChatOpenAI(), model_name="gpt-4", chain_type="stuff", retriever=vectorstore.as_retriever())
 
 contextualize_query = """
 match (node)-[:DOCUMENTE]->(e:Evenement)
