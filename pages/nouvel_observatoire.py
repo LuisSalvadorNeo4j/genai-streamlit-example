@@ -194,7 +194,7 @@ def generate_cypher(in_json):
             id = 'p'+str(time.time_ns())
           elif label == 'Event':
             id = 'e'+str(time.time_ns())
-          elif label == 'TypeEvent':
+          elif label == 'EventType':
             id = 'te'+str(time.time_ns())
           elif label == 'Article':
             id = 'a'+str(time.time_ns())
