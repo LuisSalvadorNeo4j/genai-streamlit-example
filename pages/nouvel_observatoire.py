@@ -26,11 +26,11 @@ show_pages_from_config()
 st.title("🆕 New accident observatory")
 
 constraints_cyp="""
-CREATE CONSTRAINT node_key_personne_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;
-CREATE CONSTRAINT node_key_groupe_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_person_id IF NOT EXISTS FOR (n:Person) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_group_id IF NOT EXISTS FOR (n:Group) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_impact_id IF NOT EXISTS FOR (n:Impact) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_event_id IF NOT EXISTS FOR (n:Event) REQUIRE n.id IS NODE KEY;
-CREATE CONSTRAINT node_key_typeevent_id IF NOT EXISTS FOR (n:TypeEvent) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_eventtype_id IF NOT EXISTS FOR (n:EventType) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_document_id IF NOT EXISTS FOR (n:Document) REQUIRE n.id IS NODE KEY;
 CREATE CONSTRAINT node_key_factor_id IF NOT EXISTS FOR (n:Factor) REQUIRE n.id IS NODE KEY;
@@ -38,10 +38,10 @@ CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.
 """
 
 constraint_personne_id = """
-CREATE CONSTRAINT node_key_personne_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_person_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;
 """
 constraint_groupe_id = """
-CREATE CONSTRAINT node_key_groupe_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_group_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id IS NODE KEY;
 """
 constraint_impact_id = """
 CREATE CONSTRAINT node_key_impact_id IF NOT EXISTS FOR (n:Impact) REQUIRE n.id IS NODE KEY;
@@ -50,7 +50,7 @@ constraint_event_id = """
 CREATE CONSTRAINT node_key_event_id IF NOT EXISTS FOR (n:Event) REQUIRE n.id IS NODE KEY;
 """
 constraint_typeevent_id = """
-CREATE CONSTRAINT node_key_typeevent_id IF NOT EXISTS FOR (n:TypeEvent) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_eventtype_id IF NOT EXISTS FOR (n:TypeEvent) REQUIRE n.id IS NODE KEY;
 """
 constraint_article_id = """
 CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id IS NODE KEY;
