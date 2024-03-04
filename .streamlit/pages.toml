@@ -9,6 +9,6 @@ name = "Create Observatory"
 icon = ":books:"
 
 [[pages]]
-path = "pages/nouvel_observatoire.py"
+path = "pages/new_observatory.py"
 name = "New Observatory"
 icon = ":bar_chart:"

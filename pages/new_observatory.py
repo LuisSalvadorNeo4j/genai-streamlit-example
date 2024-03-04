@@ -37,10 +37,10 @@ CREATE CONSTRAINT node_key_factor_id IF NOT EXISTS FOR (n:Factor) REQUIRE n.id I
 CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.id IS NODE KEY;
 """
 
-constraint_personne_id = """
+constraint_person_id = """
 CREATE CONSTRAINT node_key_person_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;
 """
-constraint_groupe_id = """
+constraint_group_id = """
 CREATE CONSTRAINT node_key_group_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id IS NODE KEY;
 """
 constraint_impact_id = """
@@ -49,8 +49,8 @@ CREATE CONSTRAINT node_key_impact_id IF NOT EXISTS FOR (n:Impact) REQUIRE n.id I
 constraint_event_id = """
 CREATE CONSTRAINT node_key_event_id IF NOT EXISTS FOR (n:Event) REQUIRE n.id IS NODE KEY;
 """
-constraint_typeevent_id = """
-CREATE CONSTRAINT node_key_eventtype_id IF NOT EXISTS FOR (n:TypeEvent) REQUIRE n.id IS NODE KEY;
+constraint_eventtype_id = """
+CREATE CONSTRAINT node_key_eventtype_id IF NOT EXISTS FOR (n:EventType) REQUIRE n.id IS NODE KEY;
 """
 constraint_article_id = """
 CREATE CONSTRAINT node_key_article_id IF NOT EXISTS FOR (n:Article) REQUIRE n.id IS NODE KEY;
@@ -279,11 +279,11 @@ if question:
         
         with driver.session() as session:
             #st.info('Updating constraints', icon="ℹ️")    
-            #session.run(constraint_personne_id)
-            #session.run(constraint_groupe_id)
+            #session.run(constraint_person_id)
+            #session.run(constraint_group_id)
             #session.run(constraint_impact_id)
             #session.run(constraint_event_id)
-            #session.run(constraint_typeevent_id)
+            #session.run(constraint_eventtype_id)
             #session.run(constraint_article_id)
             #session.run(constraint_document_id)
             #session.run(constraint_factor_id)

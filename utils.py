@@ -19,7 +19,7 @@ def process_gpt(system,
 
 def run_completion(prompt, results, ctext):
     try:
-      system = "Vous êtes un expert Accident aidant qui extrait des informations pertinentes et les stocke dans un graphe de connaissances Neo4j"
+      system = "You are an Accident Helper expert who extracts relevant information and stores it in a Neo4j knowledge graph"
       pr = Template(prompt).substitute(ctext=ctext)
       res = process_gpt(system, pr)
       results.append(json.loads(res.replace("\'", "'")))
