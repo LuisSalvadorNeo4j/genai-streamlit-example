@@ -66,7 +66,7 @@ vector_qa = RetrievalQA.from_chain_type(
     llm=ChatOpenAI(), chain_type="stuff", retriever=vectorstore.as_retriever())
 
 contextualize_query = """
-match (node)-[:DOCUMENTS]->(e:Event)
+match (node)-[]->(e:Event)
 WITH node AS a, e, score, {} as metadata limit 1
 OPTIONAL MATCH (e)<-[:EXPLAINS]-(f:Factor)-[:EXPLAINS]->(e2:Event)
 WITH a, e, score, metadata, apoc.text.join(collect(e2.description), ",") AS other_events
@@ -74,7 +74,7 @@ RETURN "Event : "+ e.description + " other events due to the same factor : " + c
 """
 
 contextualize_query1 = """
-match (node)-[:DOCUMENTS]->(e:Event)
+match (node)-[]->(e:Event)
 WITH node AS a, e, score, {} as metadata limit 1
 OPTIONAL MATCH (e)<-[:EXPLAINS]-(:Factor)
 WITH a, e, i, f, score, metadata
