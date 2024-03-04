@@ -188,9 +188,9 @@ def generate_cypher(in_json):
           props = ''
           label = j['label']
           id = j['id']
-          if label == 'Groupe':
+          if label == 'Group':
             id = 'g'+str(time.time_ns())
-          elif label == 'Personne':
+          elif label == 'Person':
             id = 'p'+str(time.time_ns())
           elif label == 'Event':
             id = 'e'+str(time.time_ns())

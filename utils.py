@@ -27,48 +27,48 @@ def run_completion(prompt, results, ctext):
     except Exception as e:
         print(e)
 
-prompt1="""Depuis la description de l'accident ci-dessous, extraire les entités et les relations décrites dans le format mentionné :
-0. TOUJOURS TERMINER LA RÉPONSE. Ne jamais envoyer de réponses partielles.
-1. Tout d'abord, recherchez ces types d'entités dans le texte et générez-les dans un format séparé par des virgules, similaire à celui des types d'entités. La propriété `id` de chaque entité doit être alphanumérique et unique parmi les entités. Vous ferez référence à cette propriété pour définir la relation entre les entités. Ne créez pas de nouveaux types d'entités qui ne sont pas mentionnés ci-dessous. Le document doit être résumé et stocké dans l'entité Article sous la propriété `description`. Vous devrez générer autant d'entités que nécessaire selon les types ci-dessous :
-    Types d'entités :
-    label:'Evenement',id:string,description:string,date:datetime,duree:string,lieu:string //Evenement c'est un événement qui s'est produit, par exemple un accident
-    label:'TypeEvenement',id:string,type:string //TypeEvenement c'est le type d'événement qui s'est produit
-    label:'Article',id:string,urlMedia:string,uri:string,url:string,journaliste:string,synthese:string,date:datetime,titre:string,media:string,description:string //Entité Article ; la propriété `id` c'est le nom de l'article, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Document',id:string,description:string //Entité Document ; la propriété `id` c'est le nom de du document, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Facteur',id:string,name:string // Entité Facteur c'est le facteur explicatif de l'événement; la propriété `id` c'est le nom du facteur, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Solution',id:string,name:string,description:string,when:string // Entité Solution c'est la solution qui pourrait aider à résoudre l'événement qui s'est produit ; la propriété `id` c'est le nom du facteur, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Impact',id:string,name:string,description:string // Entité Impact c'est l'impact de l'événement qui s'est produit ; la propriété `id` c'est le nom de l'impact, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Personne',id:string,prenom:string,nom:string,age:string,sexe:string,nationalite:string,profession:string,passeJudiciare:string // Entité Personne c'est une personne liée à l'événement qui s'est produit ; la propriété `id` c'est le nom de la personne, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-    label:'Groupe',id:string,nom:string,nature:string,nombreMembres:integer // Entité Groupe c'est un groupe auquel une personne est liée ; la propriété `id` c'est le nom du groupe, en lowercase & camel-case & qui commence toujours par un caractère alphabétique
-2. Ensuite, générez chaque relation comme un triplet de source, relation et cible. Pour faire référence à l'entité source et à l'entité cible, utilisez leur propriété `id` respective. Vous devrez générer autant de relations que nécessaire, comme défini ci-dessous :
-    Types de relations :
-    Personne|A_BLESSE|Personne
-    Personne|A_TUE|Personne
-    Personne|CONNAIT|Personne
-    Personne|EN_LIEN_AVEC|Personne
-    Personne|FAIT_PARTIE_DE|Groupe
-    Personne|VEUT_FAIRE_PARTIE_DE|Groupe
-    Personne|INFLUENCE|Groupe
-    Personne|DIRIGE|Groupe
-    Personne|VICTIME_DE|Evenement
-    Personne|AUTEUR_DE|Evenement
-    Personne|INTERVIENT_DANS|Evenement
-    Personne|DOCUMENTE|Evenement
-    Personne|TEMOIN_DE|Evenement
-    Personne|COVICTIME_DE|Evenement
-    Evenement|A|Impact
-    Impact|SUR|Personne
-    Evenement|SUIT|Evenement
-    Evenement|A|TypeEvenement
-    Article|DOCUMENTE|Evenement
-    Document|PROUVE|Evenement
-    Facteur|EXPLIQUE|Evenement
-    Evenement|A|Solution
+prompt1="""Since the description of the accident below, extract the entities and relationships described in the mentioned format:
+0. ALWAYS COMPLETE THE RESPONSE. Never send partial responses.
 
-Le resultat devrait ressembler à :
+1. First, look for these types of entities in the text and generate them in a format separated by commas, similar to the types of entities. The id property of each entity must be alphanumeric and unique among the entities. You will refer to this property to define the relationship between the entities. Do not create new types of entities that are not mentioned below. The document must be summarized and stored in the Article entity under the description property. You will need to generate as many entities as necessary according to the types below:
+Entity Types:
+label: 'Event', id: string, description: string, date: datetime, duration: string, location: string //Event is an event that occurred, for example, an accident
+label: 'EventType', id: string, name: string //EventType the id property is the type of event that occurred
+label: 'Article', id: string, urlMedia: string, uri: string, url: string, journalist: string, summary: string, date: datetime, title: string, media: string, description: string, text: string //Article Entity; the id property is the name of the article, in lowercase & camel-case & always starts with an alphabetical character. The text property must contain the full text of the article. The url field must be filled in by the internet link of the article
+label: 'Document', id: string, description: string //Document Entity; the id property is the name of the document, in lowercase & camel-case & always starts with an alphabetical character
+label: 'Factor', id: string, name: string // Factor Entity is the explanatory factor of the event; the id property is the name of the factor, in lowercase & camel-case & always starts with an alphabetical character
+label: 'Solution', id: string, name: string, description: string, when: string // Solution Entity is the solution that could help resolve the event that occurred; the id property is the name of the factor, in lowercase & camel-case & always starts with an alphabetical character
+label: 'Impact', id: string, name: string, description: string // Impact Entity is the impact of the event that occurred; the id property is the name of the impact, in lowercase & camel-case & always starts with an alphabetical character
+label: 'Person', id: string, first_name: string, last_name: string, age: string, gender: string, nationality: string, profession: string, judicial_past: string // Person Entity is a person related to the event that occurred; the id property is the name of the person, in lowercase & camel-case & always starts with an alphabetical character
+label: 'Group', id: string, name: string, nature: string, numberMembers: integer // Group Entity is a group to which a person is linked; the id property is the name of the group, in lowercase & camel-case & always starts with an alphabetical character
+2. Then, generate each relationship as a triplet of source, relation, and target. To refer to the source entity and the target entity, use their respective id property. You will need to generate as many relationships as necessary, as defined below:
+Relationship Types:
+Person|INJURES|Person
+Person|KILLS|Person
+Person|KNOWS|Person
+Person|RELATED_TO|Person
+Person|PART_OF|Group
+Person|WANTS_TO_BE_PART_OF|Group
+Person|INFLUENCES|Group
+Person|LEADS|Group
+Person|VICTIM_OF|Event
+Person|AUTHOR_OF|Event
+Person|INVOLVED_IN|Event
+Person|DOCUMENTS|Event
+Person|WITNESS_OF|Event
+Person|COVICTIM_OF|Event
+Event|HAS|Impact
+Impact|ON|Person
+Event|FOLLOWS|Event
+Event|HAS|EventType
+Article|DOCUMENTS|Event
+Document|PROVES|Event
+Factor|EXPLAINS|Event
+Event|HAS|Solution
+The result should look like:
 {
-    "entites": [{"label":"Evenement","id":string,"description":string,"date":datetime,"duree":string,"lieu":string}],
-    "relations": [{"personne1|A_TUE|personne2"}]
+"entities": [{"label":"Event","id":string,"description":string,"date":datetime,"duration":string,"location":string}],
+"relations": [{"source":string',"relation":string,"target":string}]
 }
 
 Accident :
