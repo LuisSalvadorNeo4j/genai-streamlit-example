@@ -38,10 +38,10 @@ CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.
 """
 
 constraint_person_id = """
-CREATE CONSTRAINT node_key_person_id IF NOT EXISTS FOR (n:Personne) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_person_id IF NOT EXISTS FOR (n:Person) REQUIRE n.id IS NODE KEY;
 """
 constraint_group_id = """
-CREATE CONSTRAINT node_key_group_id IF NOT EXISTS FOR (n:Groupe) REQUIRE n.id IS NODE KEY;
+CREATE CONSTRAINT node_key_group_id IF NOT EXISTS FOR (n:Group) REQUIRE n.id IS NODE KEY;
 """
 constraint_impact_id = """
 CREATE CONSTRAINT node_key_impact_id IF NOT EXISTS FOR (n:Impact) REQUIRE n.id IS NODE KEY;
