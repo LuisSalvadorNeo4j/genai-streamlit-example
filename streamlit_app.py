@@ -52,7 +52,7 @@ graph = Neo4jGraph(
 llm = OpenAI()
 
 vectorstore = Neo4jVector.from_existing_graph(
-    OpenAIEmbeddings(model="text-embedding-3-small"),
+    OpenAIEmbeddings(),
     url=url,
     username=username,
     password=password,
@@ -66,7 +66,7 @@ vector_qa = RetrievalQA.from_chain_type(
     llm=ChatOpenAI(), chain_type="stuff", retriever=vectorstore.as_retriever())
 
 contextualize_query = """
-match (node)-[]->(e:Event)
+match (node)-[:DOCUMENTS]->(e:Event)
 WITH node AS a, e, score, {} as metadata limit 1
 OPTIONAL MATCH (e)<-[:EXPLAINS]-(f:Factor)-[:EXPLAINS]->(e2:Event)
 WITH a, e, score, metadata, apoc.text.join(collect(e2.description), ",") AS other_events

@@ -66,7 +66,7 @@ CREATE CONSTRAINT node_key_solution_id IF NOT EXISTS FOR (n:Solution) REQUIRE n.
 """
 
 
-prompt1="""Since the description of the accident below, extract the entities and relationships described in the mentioned format:
+prompt1="""For the description of the accident, extract the entities and relationships described in the mentioned format:
 0. ALWAYS COMPLETE THE RESPONSE. Never send partial responses.
 1. First, look for these types of entities in the text and generate them in a format separated by commas, similar to the types of entities. The `id` property of each entity must be alphanumeric and unique among the entities. You will refer to this property to define the relationship between the entities. Do not create new types of entities that are not mentioned below. The document must be summarized and stored in the Article entity under the `description` property. You will need to generate as many entities as necessary according to the types below:
     Entity Types:
@@ -106,7 +106,7 @@ prompt1="""Since the description of the accident below, extract the entities and
 
 The result should look like:
 {
-    "entities": [{"label":"Event","id":string,"description":string,"date":datetime,"duration":string,"location":string}],
+    "entities": [{"label":"Article","id":string,"title":string,"date":datetime,"media":string,"text":string}],
     "relations": [{"source":string',"relation":string,"target":string}]
 }
 Accident :
